@@ -1,16 +1,87 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-      <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Shopping List</title>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
+
+<h2>Shopping List</h2>
+
+<label for="item-name-input">Item Name:</label>
+<input type="text" id="item-name-input" data-ns-test="item-name" required><br><br>
+
+<label for="item-price-input">Price:</label>
+<input type="number" id="item-price-input" data-ns-test="item-price" required><br><br>
+
+<button id="add">Add</button><br><br>
+
+<table id="shopping-table">
+  <thead>
+    <tr>
+      <th data-ns-test="item-name">Item</th>
+      <th data-ns-test="item-price">Price</th>
+    </tr>
+  </thead>
+  <tbody id="list">
+    <tr>
+      <td data-ns-test="item-name">-</td>
+      <td data-ns-test="item-price">0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 data-ns-test="grandTotal">0</h3>
+
+<script>
+document.getElementById('add').addEventListener('click', function() {
+  var itemName = document.getElementById('item-name-input').value.trim();
+  var itemPrice = parseFloat(document.getElementById('item-price-input').value.trim());
+
+  if (itemName === '' || isNaN(itemPrice) || itemPrice <= 0) {
+    alert('Please enter valid item name and price.');
+    return;
+  }
+
+  addItemToList(itemName, itemPrice);
+  document.getElementById('item-name-input').value = '';
+  document.getElementById('item-price-input').value = '';
+});
+
+function addItemToList(name, price) {
+  var tableBody = document.getElementById('list');
+  var newRow = document.createElement('tr');
+
+  var itemNameCell = document.createElement('td');
+  itemNameCell.textContent = name;
+  itemNameCell.setAttribute('data-ns-test', 'item-name');
+  newRow.appendChild(itemNameCell);
+
+  var itemPriceCell = document.createElement('td');
+  itemPriceCell.textContent = price;
+  itemPriceCell.setAttribute('data-ns-test', 'item-price');
+  newRow.appendChild(itemPriceCell);
+
+  tableBody.appendChild(newRow);
+
+  updateGrandTotal();
+}
+
+function updateGrandTotal() {
+  var totalElement = document.querySelector('[data-ns-test="grandTotal"]');
+  var totalPrice = 0;
+  var rows = document.querySelectorAll('#list tr');
+  
+  rows.forEach(function(row) {
+    var price = parseFloat(row.querySelector('[data-ns-test="item-price"]').textContent);
+    totalPrice += price;
+  });
+
+  totalElement.textContent = totalPrice;
+}
 </script>
 
 </body>
-
 </html>
+
